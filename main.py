@@ -54,7 +54,7 @@ def signup():
 
 
     #Check If Any Failures        
-    if len(user_error) > 0: 
+    if len(user_error) > 0 or len(pass_var_error) > 0 or len(verify_password_error) > 0 or len(mail_error) > 0: 
         #Passing variables to signup_form html page
         return  render_template('signup_form.html', 
             user_html = user, 
@@ -65,6 +65,7 @@ def signup():
             verify_error_html = verify_password_error,
             mail_html = mail,
             mail_error_html = mail_error)
+     
     else:
         return render_template('welcome.html', name = user)    
 
