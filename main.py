@@ -1,51 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, redirect, render_template
+import os
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-html = """
-<!doctype html>
-
-<html>
-<head>
-    <style>
-        .error {{
-            color: red;
-        }}
-    </style>
-</head>
-
-<body>
-
-    </h1>Signup</h1>
-    <form action='signup'  method= 'POST'>
-        <label>Username</label>
-        <input type = "text" name= "user" value = '{4}'/>
-        <span class='error'> {0}</span>
-        <br />
-        <label>Password</label>
-        <input type = "password" name = "pass_var" />
-        <span class = 'error'>{1} </span>
-        <br />
-    
-        <label> Verify Password </label>
-        <input type = "password" name = "verify"/>
-        <span class = 'error'>{2}</span>
-        <br />
-
-        <label> Email (optional) </label>
-        <input type = "text" name = "mail" value = '{5}'/>
-        <span class = 'error'>{3}</span>
-        <br />
-
-        <input type = "submit" value = "Submit"/>
-        
-        
-    </body>        
-</html>
-"""
-
-
+@app.route("/welcome", methods=['POST'])
+def welcome():
+    return render_template('welcome.html')
 
 
 @app.route("/signup",  methods=['POST'])
@@ -90,14 +51,27 @@ def signup():
     else:
         if len(mail) < 3 or len(mail) > 20:
             mail_error = 'Email must be at least three characters and no more than twenty characters'   
-            
 
-    return  html.format(user_error, pass_var_error,verify_password_error,mail_error,user,mail)
+
+    #Check If Any Failures        
+    if len(user_error) > 0: 
+        #Passing variables to signup_form html page
+        return  render_template('signup_form.html', 
+            user_html = user, 
+            user_error_html = user_error, 
+            
+            pass_var_error_html = pass_var_error, 
+            
+            verify_error_html = verify_password_error,
+            mail_html = mail,
+            mail_error_html = mail_error)
+    else:
+        return render_template('welcome.html', name = user)    
 
 
 @app.route("/")
 def index():
-    return html.format("")
+    return render_template('signup_form.html') #html.format("")
 
 app.run()
 
